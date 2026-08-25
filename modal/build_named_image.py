@@ -5,7 +5,7 @@ from __future__ import annotations
 import modal
 
 
-SOURCE_REVISION = "e29b26c12527d4ca1dec4c4ad72080b563043bb3"
+SOURCE_REVISION = "d935e07bd8b672a76eb742e2d40ea643ee24a6d1"
 SOURCE_IMAGE = f"ghcr.io/tommyeth/yijie-server-image:{SOURCE_REVISION}"
 
 BUILD_APP = "yijie-image-builds"

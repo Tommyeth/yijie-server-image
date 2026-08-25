@@ -4,7 +4,7 @@
 its layers, and publishes two reusable Named Images:
 
 - `yijie-server-image:b11c768`
-- `yijie-server-image:e29b26c12527`
+- `yijie-server-image:d935e07bd8b6`
 
 The published Modal image clears the Docker `ENTRYPOINT` so it can be used by
 Modal Functions and Sandboxes. Start the bundled KataGo HTTP node explicitly:
