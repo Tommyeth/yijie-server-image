@@ -53,6 +53,17 @@ class EngineUnavailable(RuntimeError):
     pass
 
 
+def is_final_engine_response(value: Any) -> bool:
+    """Return true only for a terminal KataGo analysis or error response.
+
+    KataGo may emit warning-only JSON objects with the same query id before the
+    real analysis. Treating those as terminal drops the subsequent result.
+    """
+    if not isinstance(value, dict) or value.get("isDuringSearch") is True:
+        return False
+    return "error" in value or "rootInfo" in value or "moveInfos" in value
+
+
 def normalize_query(value: Any) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise BadQuery("position must be a JSON object")
@@ -244,7 +255,11 @@ class Engine:
                     print(f"KataGo stdout (non-JSON): {line.rstrip()}", file=sys.stderr)
                     continue
                 query_id = value.get("id")
-                if not isinstance(query_id, str) or value.get("isDuringSearch") is True:
+                if not isinstance(query_id, str):
+                    continue
+                if not is_final_engine_response(value):
+                    if value.get("warning"):
+                        print(f"katago warning: {value.get('warning')}", file=sys.stderr)
                     continue
                 with self._pending_lock:
                     target = self._pending.get(query_id)

@@ -63,6 +63,27 @@ class NormalizeQueryTests(unittest.TestCase):
         self.assertEqual(status["activeSearches"], 0)
         self.assertEqual(status["availableSlots"], 4)
 
+    def test_only_analysis_or_error_is_a_final_engine_response(self):
+        self.assertFalse(SERVER.is_final_engine_response({
+            "id": "q",
+            "field": "maxTime",
+            "warning": "Unexpected or unused field",
+        }))
+        self.assertFalse(SERVER.is_final_engine_response({
+            "id": "q",
+            "isDuringSearch": True,
+            "rootInfo": {},
+        }))
+        self.assertTrue(SERVER.is_final_engine_response({
+            "id": "q",
+            "rootInfo": {},
+            "moveInfos": [],
+        }))
+        self.assertTrue(SERVER.is_final_engine_response({
+            "id": "q",
+            "error": "bad query",
+        }))
+
 
 class FakeEngine:
     def __init__(self):
